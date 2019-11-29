@@ -1,0 +1,5 @@
+# PDF output
+weasyprint==50
+jinja2==2.10.3
+# Database
+pony==0.7.11
