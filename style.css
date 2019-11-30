@@ -1,0 +1,19 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-weight: normal;
+	list-style: none;
+}
+
+body {
+	font-family: Cantarell;
+}
+
+#bill {
+	width: 100%;
+}
+
+#bill th {
+	text-align: center;
+}

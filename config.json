@@ -1,0 +1,13 @@
+{
+	"__comment__":
+
+	"This is mCSSostly fake information to fill out the template. Customize it to your needs.",
+
+	"name":"Firstname LASTNAME",
+	"address":"24 market street",
+	"postal_code":"94103",
+	"city":"San Francisco",
+	"tel":"+33 1 23 45 67 89",
+	"email":"kilian.guillaume@gmail.com",
+	"siret":"732 829 320 00074"
+}

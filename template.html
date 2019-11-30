@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<header>
+			<div>
+				<h1>{{own.name}}</h1>
+				<p>SIRET {{own.siret}}</p>
+			</div>
+			<div>
+				<h2>Facture</h2>
+			</div>
+		</header>
+		<main>
+			<section>
+				<ul id="own-info">
+					<li>{{own.name}}</li>
+					<li>{{own.address}}</li>
+					<li>{{own.postal_code}} {{own.city}}</li>
+					<li>{{own.tel}}</li>
+					<li>{{own.email}}</li>
+				</ul>
+				<dl id="bill-info">
+					<dt>N° Facture :</dt><dd>{{bill.id}}</dd>
+					<dt>Date :</dt><dd>{{bill.date}}</dd>
+				</dl>
+				<ul id="client-info">
+					<li>{{client.name}}</li>
+					<li>{{client.address}}</li>
+					<li>{{client.postal_code}} {{client.city}}</li>
+					<li>{{client.tel}}</li>
+					<li>{{client.email}}</li>
+				</ul>
+			</section>
+			<table id="bill">
+				<thead>
+					<tr>
+						<th>Prestation</th>
+						<th>Heures</th>
+						<th>Prix Horaire HT</th>
+						<th>Total HT</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<table id="total">
+				<tbody>
+					<tr><td>Montant hors taxe</td><td>{{bill.total}}</td></tr>
+					<tr><td>TVA non applicable, art. 293 B du CGI</td><td>0,00€</td></tr>
+					<tr><td>TOTAL</td><td>{{bill.total}}</td></tr>
+				</tbody>
+			</table>
+		</main>
+	</body>
+</html>
