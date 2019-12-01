@@ -5,37 +5,53 @@
 		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
-		<header>
-			<div>
-				<h1>{{own.name}}</h1>
-				<p>SIRET {{own.siret}}</p>
-			</div>
-			<div>
-				<h2>Facture</h2>
-			</div>
-		</header>
+		<table id="header" class="fullwidth halfcols">
+			<tr>
+				<td><h1>{{own.name}}</h1></td>
+				<td rowspan=2><h2>Facture</h2></td>
+			</tr>
+			<tr>
+				<td>SIRET {{own.siret}}</td>
+			<tr>
+		</table>
+		<hr>
 		<main>
-			<section>
-				<ul id="own-info">
-					<li>{{own.name}}</li>
-					<li>{{own.address}}</li>
-					<li>{{own.postal_code}} {{own.city}}</li>
-					<li>{{own.tel}}</li>
-					<li>{{own.email}}</li>
-				</ul>
-				<dl id="bill-info">
-					<dt>N° Facture :</dt><dd>{{bill.id}}</dd>
-					<dt>Date :</dt><dd>{{bill.date}}</dd>
-				</dl>
-				<ul id="client-info">
-					<li>{{client.name}}</li>
-					<li>{{client.address}}</li>
-					<li>{{client.postal_code}} {{client.city}}</li>
-					<li>{{client.tel}}</li>
-					<li>{{client.email}}</li>
-				</ul>
-			</section>
-			<table id="bill">
+			<table class="fullwidth halfcols">
+				<tr>
+					<td>
+						<ul id="own-info">
+							<li>{{own.name}}</li>
+							<li>{{own.address}}</li>
+							<li>{{own.postal_code}} {{own.city}}</li>
+							<li>{{own.tel}}</li>
+							<li>{{own.email}}</li>
+						</ul>
+					</td>
+					<td>
+						<table id="bill-info" class="fullwidth">
+							<tr><td>N° Facture :</td><td>{{bill.id}}</td></tr>
+							<tr><td>Date :</td><td>{{bill.date}}</td></tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<hr>
+			<table class="fullwidth halfcols">
+				<tr>
+					<td></td>
+					<td>
+						<ul id="client-info">
+							<li>{{client.name}}</li>
+							<li>{{client.address}}</li>
+							<li>{{client.postal_code}} {{client.city}}</li>
+							<li>{{client.tel}}</li>
+							<li>{{client.email}}</li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+			<hr>
+			<table id="bill" class="fullwidth">
 				<thead>
 					<tr>
 						<th>Prestation</th>
@@ -47,6 +63,7 @@
 				<tbody>
 				</tbody>
 			</table>
+			<hr>
 			<table id="total">
 				<tbody>
 					<tr><td>Montant hors taxe</td><td>{{bill.total}}</td></tr>
