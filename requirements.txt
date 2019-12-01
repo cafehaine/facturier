@@ -3,3 +3,5 @@ weasyprint==50
 jinja2==2.10.3
 # Database
 pony==0.7.11
+# Terminal UI
+urwid==2.1.0
