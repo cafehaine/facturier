@@ -5,7 +5,7 @@ A set of classes and functions to create a terminal ui.
 from enum import Enum, auto
 from typing import Any, Optional, List, Dict
 
-from pony.orm import db_session
+from pony.orm import commit, db_session
 import urwid
 
 from facturier.entities import Client
@@ -40,6 +40,7 @@ class NextPile(urwid.Pile):
         """On any keypress."""
         if key == 'esc':
             raise urwid.ExitMainLoop()
+
         if key == 'tab' or key == 'enter' and isinstance(
                 self.focus_item, urwid.Edit):
             try:
@@ -47,6 +48,7 @@ class NextPile(urwid.Pile):
             except IndexError:
                 pass
             return None
+
         if key == 'shift tab':
             try:
                 if self.focus_position > 1:
@@ -54,13 +56,15 @@ class NextPile(urwid.Pile):
             except IndexError:
                 pass
             return None
+
         return super().keypress(size, key)
 
 
 def _show_form(title: str, fields: List[Field]) -> Dict[str, Any]:
     """Show a form and return all the fields and their values."""
     results: Dict[str, Any] = {}
-    form_fields: List[urwid.Widget] = [urwid.Text(('ui', title + "\n"))]
+    form_fields: Dict[str, urwid.Widget] = {}
+    widgets = [urwid.Text(('ui', title + "\n"))]
 
     for field in fields:
         widget: urwid.Widget
@@ -69,7 +73,7 @@ def _show_form(title: str, fields: List[Field]) -> Dict[str, Any]:
                                 edit_text=field.value)
         else:
             raise Exception("Unhandled FieldType %s", field.type)
-        form_fields.append(widget)
+        form_fields[field.label] = widget
 
     exit_type = "Cancel"
 
@@ -77,13 +81,18 @@ def _show_form(title: str, fields: List[Field]) -> Dict[str, Any]:
         exit_type = button.get_label()
         raise urwid.ExitMainLoop()
 
+    widgets.extend(form_fields.values())
     button = urwid.Button(('ui',"OK"), on_press=on_button_click)
+    widgets.append(button)
 
-    form_fields.append(button)
-    pile = NextPile(form_fields)
+    pile = NextPile(widgets)
     top = urwid.Filler(pile, valign='top')
     urwid.MainLoop(top, PALETTE).run()
-    return {}
+    output: Dict[str, Any] = {}
+    for label, field in form_fields.items():
+        #TODO handle other input types
+        output[label] = field.edit_text
+    return output
 
 
 @db_session
@@ -96,7 +105,20 @@ def edit_client(client: Client, new: bool = False) -> Client:
         Field(FieldType.TEXT, 'City', client.city),
         Field(FieldType.TEXT, 'Country', client.country),
     ])
-    #TODO treat output
+
+    for label, value in output.items():
+        if label == "Name":
+            client.name = value
+        elif label == "Address":
+            client.address = value
+        elif label == "Postal code":
+            client.postal_code = value
+        elif label == "City":
+            client.city = value
+        elif label == "Country":
+            client.country = value
+
+    commit()
     return client
 
 
