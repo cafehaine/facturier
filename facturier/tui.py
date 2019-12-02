@@ -8,7 +8,9 @@ from typing import Any, Optional, List, Dict
 from pony.orm import db_session
 import urwid
 
-from entities import Client
+from facturier.entities import Client
+
+PALETTE = [('ui', 'light green', 'default')]
 
 
 class FieldType(Enum):
@@ -58,12 +60,12 @@ class NextPile(urwid.Pile):
 def _show_form(title: str, fields: List[Field]) -> Dict[str, Any]:
     """Show a form and return all the fields and their values."""
     results: Dict[str, Any] = {}
-    form_fields: List[urwid.Widget] = [urwid.Text(title + "\n")]
+    form_fields: List[urwid.Widget] = [urwid.Text(('ui', title + "\n"))]
 
     for field in fields:
         widget: urwid.Widget
         if field.type == FieldType.TEXT:
-            widget = urwid.Edit(caption=field.label + ":\n",
+            widget = urwid.Edit(caption=('ui', field.label + ":\n"),
                                 edit_text=field.value)
         else:
             raise Exception("Unhandled FieldType %s", field.type)
@@ -75,12 +77,12 @@ def _show_form(title: str, fields: List[Field]) -> Dict[str, Any]:
         exit_type = button.get_label()
         raise urwid.ExitMainLoop()
 
-    button = urwid.Button("OK", on_press=on_button_click)
+    button = urwid.Button(('ui',"OK"), on_press=on_button_click)
 
     form_fields.append(button)
     pile = NextPile(form_fields)
     top = urwid.Filler(pile, valign='top')
-    urwid.MainLoop(top).run()
+    urwid.MainLoop(top, PALETTE).run()
     return {}
 
 
