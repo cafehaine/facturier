@@ -2,6 +2,7 @@
 Entities used to store data between executions.
 """
 from decimal import Decimal
+from datetime import date
 
 from pony.orm import Database, Optional, PrimaryKey, Required, Set
 
@@ -23,6 +24,7 @@ class Bill(DB.Entity):
     """A bill."""
     id = PrimaryKey(int, auto=True)
     client = Optional(Client)
+    date = Optional(date)
     entries = Set('BillEntry')
 
     def get_total(self):

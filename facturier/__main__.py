@@ -28,7 +28,7 @@ if __name__ == "__main__":
     # remove when DB bindings are working, and cli is implemented
     entities.DB.bind(provider='sqlite', filename=':memory:')
     entities.DB.generate_mapping(create_tables=True)
-    tui.new_client()
+    tui.new_bill()
 
     env = Environment(loader=FileSystemLoader('.'), autoescape=True)
 
