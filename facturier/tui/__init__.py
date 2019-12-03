@@ -48,8 +48,7 @@ def _show_form(title: str, fields: List[Field]) -> Dict[str, Any]:
             widget = urwid.Edit(caption=('ui', field.label + ":\n"),
                                 edit_text=field.value)
         elif field.type == FieldType.SELECT:
-            widget = Select(field.kwargs['choices'], field.value,
-                            ('ui', "Select a " + field.label))
+            widget = Select(field.label, field.kwargs['choices'], field.value)
             to_wire_stack.append(widget)
         elif field.type == FieldType.DATE:  #TODO lel
             widget = urwid.Edit(caption=('ui', field.label + ":\n"))

@@ -3,10 +3,17 @@ Entities used to store data between executions.
 """
 from decimal import Decimal
 from datetime import date
+from random import choice
 
-from pony.orm import Database, Optional, PrimaryKey, Required, Set
+from pony.orm import commit, Database, db_session, Optional, PrimaryKey, Required, Set
 
 DB = Database()
+
+FAKE_NAME = [
+    'MARY', 'PATRICIA', 'LINDA', 'BARBARA', 'ELIZABETH', 'JENNIFER', 'MARIA',
+    'SUSAN', 'MARGARET', 'DOROTHY', 'JAMES', 'JOHN', 'ROBERT', 'MICHAEL',
+    'WILLIAM', 'DAVID', 'RICHARD', 'CHARLES', 'JOSEPH', 'THOMAS'
+]
 
 
 class Client(DB.Entity):
@@ -18,6 +25,15 @@ class Client(DB.Entity):
     city = Optional(str)
     country = Optional(str)
     bills = Set('Bill')
+
+
+@db_session
+def generateRandomClients(count=50):
+    """Generate random clients for tests."""
+    for i in range(count):
+        Client(name="{} {}".format(
+            choice(FAKE_NAME).capitalize(), choice(FAKE_NAME)))
+    commit()
 
 
 class Bill(DB.Entity):

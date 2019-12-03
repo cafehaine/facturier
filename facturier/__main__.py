@@ -28,6 +28,10 @@ if __name__ == "__main__":
     # remove when DB bindings are working, and cli is implemented
     entities.DB.bind(provider='sqlite', filename=':memory:')
     entities.DB.generate_mapping(create_tables=True)
+    entities.generateRandomClients()
+    from pony.orm import db_session
+    with db_session():
+        entities.Client.select().show()
     tui.new_bill()
 
     env = Environment(loader=FileSystemLoader('.'), autoescape=True)
