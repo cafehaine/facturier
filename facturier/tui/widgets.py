@@ -56,6 +56,27 @@ class NextPile(urwid.Pile):
         return super().keypress(size, key)
 
 
+class CallbackEdit(urwid.Edit):
+    """An Edit widget with a callback on text change."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.callbacks = []
+
+    def register_callback(self, callback):
+        """Add a function to call when the value changed."""
+        self.callbacks.append(callback)
+
+    def keypress(self, size, key):
+        """Call the callbacks when the value changes."""
+        old = self._edit_text
+        output = super().keypress(size, key)
+        new = self._edit_text
+        if old != new:
+            for callback in self.callbacks:
+                callback()
+        return output
+
+
 class Select(urwid.Button):
     """An Edit widget with options to choose from."""
     def __init__(self, name, options, value, *args, **kwargs):
@@ -64,26 +85,28 @@ class Select(urwid.Button):
         self.value = value
         self.stack_main_loop = None
         self.name = name
-        self.search = urwid.Edit(caption=('ui', self.name + ": "),
-                                 edit_text=self.value or '')
+        self.search = CallbackEdit(caption=('ui', self.name + ": "),
+                                   edit_text=self.value or '')
+        self.search.register_callback(self.set_results)
         self.pile = urwid.Pile([])
-        urwid.connect_signal(self, 'click', self.showPopup)
+        urwid.connect_signal(self, 'click', self.show_popup)
+        self.set_results()
 
-    def setStackMainLoop(self, stack_main_loop: StackMainLoop):
+    def set_stack_main_loop(self, stack_main_loop: StackMainLoop):
         """Set the StackMainLoop to show the 'popup' in."""
         self.stack_main_loop = stack_main_loop
 
-    def setResults(self):
+    def set_results(self):
         """Update the pile's results given the search input."""
         results = []
         search = self.search.edit_text.lower()
-        options = urwid.Pile.options(height_type='pack', height_amount=None)
-        for option in options:
-            if search in option:
+        options = self.pile.options(height_type='pack', height_amount=None)
+        for option in self.options:
+            if search in option.lower():
                 results.append((urwid.Text(option), options))
-        return results
+        self.pile.contents = results
 
-    def showPopup(self, target):
+    def show_popup(self, target):
         """Show the popup."""
         if self.stack_main_loop is None:
             raise Exception("Please set StackMainLoop for this widget.")

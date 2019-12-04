@@ -70,13 +70,14 @@ def _show_form(title: str, fields: List[Field]) -> Dict[str, Any]:
     top = urwid.Filler(pile, valign='top')
     stack = StackMainLoop(top, PALETTE)
     for widget in to_wire_stack:
-        widget.setStackMainLoop(stack)
+        widget.set_stack_main_loop(stack)
     stack.run()
-    output: Dict[str, Any] = {}
+    if exit_type == "Cancel":
+        return {}
     for label, field in form_fields.items():
         #TODO handle other input types
-        output[label] = field.edit_text
-    return output
+        results[label] = field.edit_text
+    return results
 
 
 @db_session
