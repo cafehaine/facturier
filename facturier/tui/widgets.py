@@ -114,6 +114,7 @@ class Select(urwid.Button):
         super().__init__(('ui', "Select a {} [{}]".format(name, value)), *args,
                          **kwargs)
         self.options = options
+        self.results = []
         self.value = value
         self.stack_main_loop = None
         self.name = name
@@ -128,21 +129,38 @@ class Select(urwid.Button):
         self.search.register_callback(
             self.up_down_select, CallbackEditType.UP | CallbackEditType.DOWN)
         self.pile = urwid.Pile([])
-        self.select_index = 0
+        self.index = 0
         urwid.connect_signal(self, 'click', self.show_popup)
         self.set_results()
 
     def cancel_select(self, cbtype):
         """Called when the CallbackEdit widget is canceled."""
-        raise Exception("Canceled")
+        self.stack_main_loop.pop_widget()
 
     def validate_select(self, cbtype):
         """Called when the CallbackEdit widget is validated."""
-        raise Exception("Validated")
+        if self.index == 0:
+            self.value = None
+        else:
+            self.value = self.results[self.index]
+        self.set_label(('ui', "Select a {} [{}]".format(self.name,
+                                                        self.value)))
+        self.stack_main_loop.pop_widget()
 
     def up_down_select(self, cbtype):
         """Called when arrow up or down is pressed."""
-        raise Exception("Up-Downed.", cbtype)
+        oldindex = self.index
+        if cbtype == CallbackEditType.UP and self.index > 0:
+            self.index = self.index - 1
+        if cbtype == CallbackEditType.DOWN and self.index < len(
+                self.results) - 1:
+            self.index = self.index + 1
+        options = self.pile.options(height_type='pack', height_amount=None)
+        if oldindex != self.index:
+            self.pile.contents[oldindex] = (urwid.Text("  {}".format(
+                self.results[oldindex])), options)
+            self.pile.contents[self.index] = (urwid.Text("> {}".format(
+                self.results[self.index])), options)
 
     def set_stack_main_loop(self, stack_main_loop: StackMainLoop):
         """Set the StackMainLoop to show the 'popup' in."""
@@ -150,14 +168,16 @@ class Select(urwid.Button):
 
     def set_results(self, cbtype=None):
         """Update the pile's results given the search input."""
-        results = []
-        search = self.search.edit_text.lower()
         options = self.pile.options(height_type='pack', height_amount=None)
-        index = 0
+        self.results = ['<None>']
+        search = self.search.edit_text.lower()
         for option in self.options:
             if search in option.lower():
-                results.append((urwid.Text(option), options))
-        self.pile.contents = results
+                self.results.append(option)
+        self.index = 1 if len(self.results) > 1 else 0
+        self.pile.contents = [(urwid.Text(
+            ("> {}" if i == self.index else "  {}").format(result)), options)
+                              for i, result in enumerate(self.results)]
 
     def show_popup(self, target):
         """Show the popup."""
