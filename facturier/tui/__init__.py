@@ -10,7 +10,7 @@ from pony.orm import commit, db_session, select
 import urwid
 
 from facturier.entities import Bill, Client
-from .widgets import NextPile, Select, StackMainLoop
+from .widgets import Date, NextPile, Select, StackMainLoop
 
 PALETTE = [('ui', 'light green', 'default')]
 
@@ -50,8 +50,8 @@ def _show_form(title: str, fields: List[Field]) -> Dict[str, Any]:
         elif field.type == FieldType.SELECT:
             widget = Select(field.label, field.kwargs['choices'], field.value)
             to_wire_stack.append(widget)
-        elif field.type == FieldType.DATE:  #TODO lel
-            widget = urwid.Edit(caption=('ui', field.label + ":\n"))
+        elif field.type == FieldType.DATE:
+            widget = Date(field.label, field.value)
         else:
             raise Exception("Unhandled FieldType %s", field.type)
         form_fields[field.label] = widget
@@ -59,6 +59,7 @@ def _show_form(title: str, fields: List[Field]) -> Dict[str, Any]:
     exit_type = "Cancel"
 
     def on_button_click(button):
+        nonlocal exit_type
         exit_type = button.get_label()
         raise urwid.ExitMainLoop()
 
@@ -75,8 +76,12 @@ def _show_form(title: str, fields: List[Field]) -> Dict[str, Any]:
     if exit_type == "Cancel":
         return {}
     for label, field in form_fields.items():
-        #TODO handle other input types
-        results[label] = field.edit_text
+        if isinstance(field, Date):
+            results[label] = field.get_date()
+        elif isinstance(field, Select):
+            results[label] = field.value
+        else:
+            results[label] = field.edit_text
     return results
 
 

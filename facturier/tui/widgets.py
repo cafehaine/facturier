@@ -1,7 +1,9 @@
 """
 Some widgets used in the tui.
 """
+from datetime import date
 from enum import auto, IntFlag
+import re
 from typing import Any, Callable, Tuple
 
 import urwid
@@ -185,3 +187,24 @@ class Select(urwid.Button):
             raise Exception("Please set StackMainLoop for this widget.")
         self.stack_main_loop.push_widget(
             urwid.Frame(self.pile, self.search, None, 'header'))
+
+
+class Date(urwid.Edit):
+    """An edit widget used to type in a date."""
+    def __init__(self, name, value):
+        self.name = name
+        self.value = '{:%d/%m/%Y}'.format(value) if value is not None else ''
+        super().__init__(caption=('ui', self.name + " (dd/mm/yyyy) :\n"),
+                         edit_text=self.value)
+
+    def get_date(self):
+        """Return the date selected or None if invalid."""
+        regex = r"^(?P<day>\d{1,2})/(?P<month>\d{1,2})/(?P<year>\d{1,4}$)"
+        match = re.match(regex, self.edit_text)
+        if match is None:
+            return None
+        day, month, year = match.group('day', 'month', 'year')
+        try:
+            return date(int(year), int(month), int(day))
+        except ValueError:
+            return None
