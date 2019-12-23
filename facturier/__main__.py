@@ -32,28 +32,26 @@ def handle_list(**kwargs):
 def handle_generate(**kwargs):
     """Generate the pdf output for a bill if it exists."""
     bill = None
-    client = None
     bill_id = kwargs['id'][0]
     with db_session:
         try:
             bill = entities.Bill[bill_id]
-            client = bill.client
         except ObjectNotFound:
             print("Bill with id {} not found.".format(bill_id))
             sys.exit(1)
 
-    output_path = "/tmp/template.pdf"
+        output_path = "/tmp/template.pdf"
 
-    env = Environment(loader=FileSystemLoader('.'), autoescape=True)
-    css = CSS('style.css')
-    template = env.get_template('template.html')
+        env = Environment(loader=FileSystemLoader('.'), autoescape=True)
+        css = CSS('style.css')
+        template = env.get_template('template.html')
 
-    with open('config.json') as config:
-        own = json.load(config)
+        with open('config.json') as config:
+            own = json.load(config)
 
-    rendered_html = template.render(own=own, bill=bill, client=client)
-    HTML(string=rendered_html).write_pdf(output_path, stylesheets=[css])
-    print("Rendered bill as '{}'.".format(output_path))
+        rendered_html = template.render(own=own, bill=bill)
+        HTML(string=rendered_html).write_pdf(output_path, stylesheets=[css])
+        print("Rendered bill as '{}'.".format(output_path))
 
 
 if __name__ == "__main__":

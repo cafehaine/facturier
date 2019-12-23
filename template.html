@@ -41,11 +41,11 @@
 					<td></td>
 					<td>
 						<ul id="client-info">
-							<li>{{client.name}}</li>
-							<li>{{client.address}}</li>
-							<li>{{client.postal_code}} {{client.city}}</li>
-							<li>{{client.tel}}</li>
-							<li>{{client.email}}</li>
+							<li>{{bill.client.name}}</li>
+							<li>{{bill.client.address}}</li>
+							<li>{{bill.client.postal_code}} {{bill.client.city}}</li>
+							<li>{{bill.client.tel}}</li>
+							<li>{{bill.client.email}}</li>
 						</ul>
 					</td>
 				</tr>
@@ -61,14 +61,22 @@
 					</tr>
 				</thead>
 				<tbody>
+					{% for entry in bill.entries %}
+					<tr>
+						<td>{{entry.product}}</td>
+						<td>{{entry.quantity}}</td>
+						<td>{{entry.unit_cost}}</td>
+						<td>{{entry.get_total()}}</td>
+					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 			<hr>
 			<table id="total">
 				<tbody>
-					<tr><td>Montant hors taxe</td><td>{{bill.total}}</td></tr>
+					<tr><td>Montant hors taxe</td><td>{{bill.get_total()}}</td></tr>
 					<tr><td>TVA non applicable, art. 293 B du CGI</td><td>0,00€</td></tr>
-					<tr><td>TOTAL</td><td>{{bill.total}}</td></tr>
+					<tr><td>TOTAL</td><td>{{bill.get_total()}}</td></tr>
 				</tbody>
 			</table>
 		</main>
