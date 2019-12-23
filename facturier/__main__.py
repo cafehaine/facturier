@@ -20,6 +20,30 @@ def handle_create(**kwargs):
         tui.new_bill()
 
 
+def handle_edit(**kwargs):
+    """Show forms to edit an existing client or bill."""
+    if kwargs['type'][0] in ['client', 'c']:
+        client = None
+        client_id = kwargs['id'][0]
+        with db_session:
+            try:
+                client = entities.Client[client_id]
+            except ObjectNotFound:
+                print("Client with id {} not found.".format(client_id))
+                sys.exit(1)
+            tui.edit_client(client)
+    else:
+        bill = None
+        bill_id = kwargs['id'][0]
+        with db_session:
+            try:
+                bill = entities.Bill[bill_id]
+            except ObjectNotFound:
+                print("Bill with id {} not found.".format(bill_id))
+                sys.exit(1)
+            tui.edit_bill(bill)
+
+
 def handle_list(**kwargs):
     """List all users or bills."""
     with db_session:
@@ -65,6 +89,16 @@ if __name__ == "__main__":
     create_parser.add_argument('type',
                                nargs=1,
                                choices=['client', 'c', 'bill', 'b'])
+
+    # Edit a client or bill
+    edit_parser = subparsers.add_parser('edit',
+                                        aliases=['e'],
+                                        help="Edit a client or bill.")
+    edit_parser.set_defaults(func=handle_edit)
+    edit_parser.add_argument('type',
+                             nargs=1,
+                             choices=['client', 'c', 'bill', 'b'])
+    edit_parser.add_argument('id', nargs=1, type=int)
 
     # List clients or bills
     list_parser = subparsers.add_parser('list',

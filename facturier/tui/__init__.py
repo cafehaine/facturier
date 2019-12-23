@@ -130,8 +130,14 @@ def edit_bill(bill: Bill, new: bool = False):
               choices=select(c.name for c in Client)[:]),
         Field(FieldType.DATE, 'Date', bill.date)
     ])
-    # Edit entries
-    #TODO
+
+    for label, value in output.items():
+        if label == "Client":
+            bill.client = Client.get(name=value)
+        elif label == "Date":
+            bill.date = value
+
+    commit()
 
 
 @db_session()
