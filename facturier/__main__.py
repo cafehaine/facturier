@@ -4,6 +4,7 @@ from datetime import date
 import sys
 
 from jinja2 import Environment, FileSystemLoader
+from pony.orm import db_session
 from weasyprint import CSS, HTML
 
 from facturier import entities
@@ -11,14 +12,18 @@ from facturier import tui
 
 
 def handle_create(**kwargs):
-    if kwargs['type'][0] == 'c':
+    if kwargs['type'][0] in ['client', 'c']:
         tui.new_client()
     else:
         tui.new_bill()
 
 
 def handle_list(**kwargs):
-    print(kwargs)
+    with db_session:
+        if kwargs['type'][0] in ['clients', 'c']:
+            entities.Client.select().show()
+        else:
+            entities.Bill.select().show()
 
 
 def handle_generate(**kwargs):
@@ -44,7 +49,7 @@ if __name__ == "__main__":
     list_parser.set_defaults(func=handle_list)
     list_parser.add_argument('type',
                              nargs=1,
-                             choices=['client', 'c', 'bill', 'b'])
+                             choices=['clients', 'c', 'bills', 'b'])
 
     # Generate a bill's PDF
     gen_parser = subparsers.add_parser(
@@ -62,7 +67,6 @@ if __name__ == "__main__":
     entities.DB.bind(provider='sqlite', filename='db.sqlite', create_db=True)
     entities.DB.generate_mapping(create_tables=True)
     #entities.generateRandomClients()
-
     namespace['func'](**namespace)
 
     # remove when DB bindings are working, and cli is implemented
