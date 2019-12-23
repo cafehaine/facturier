@@ -30,9 +30,9 @@ class Client(DB.Entity):
 
 
 @db_session
-def generateRandomClients(count=50):
+def generate_random_clients(count=50):
     """Generate random clients for tests."""
-    for i in range(count):
+    for _ in range(count):
         Client(name="{} {}".format(
             choice(FAKE_NAMES).capitalize(), choice(FAKE_NAMES)))
     commit()

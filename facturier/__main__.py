@@ -1,6 +1,5 @@
 import argparse
 import json
-from datetime import date
 import sys
 
 from jinja2 import Environment, FileSystemLoader
@@ -78,46 +77,54 @@ def handle_generate(**kwargs):
         print("Rendered bill as '{}'.".format(output_path))
 
 
-if __name__ == "__main__":
+def create_parser():
+    """Create the argument parser for the main."""
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(title='commands')
 
     # Create new client or bill
-    create_parser = subparsers.add_parser(
-        'create', aliases=['c'], help="Create a client or a new bill.")
-    create_parser.set_defaults(func=handle_create)
-    create_parser.add_argument('type',
-                               nargs=1,
-                               choices=['client', 'c', 'bill', 'b'])
-
-    # Edit a client or bill
-    edit_parser = subparsers.add_parser('edit',
-                                        aliases=['e'],
-                                        help="Edit a client or bill.")
-    edit_parser.set_defaults(func=handle_edit)
-    edit_parser.add_argument('type',
+    create_prsr = subparsers.add_parser('create',
+                                        aliases=['c'],
+                                        help="Create a client or a new bill.")
+    create_prsr.set_defaults(func=handle_create)
+    create_prsr.add_argument('type',
                              nargs=1,
                              choices=['client', 'c', 'bill', 'b'])
-    edit_parser.add_argument('id', nargs=1, type=int)
+
+    # Edit a client or bill
+    edit_prsr = subparsers.add_parser('edit',
+                                      aliases=['e'],
+                                      help="Edit a client or bill.")
+    edit_prsr.set_defaults(func=handle_edit)
+    edit_prsr.add_argument('type',
+                           nargs=1,
+                           choices=['client', 'c', 'bill', 'b'])
+    edit_prsr.add_argument('id', nargs=1, type=int)
 
     # List clients or bills
-    list_parser = subparsers.add_parser('list',
-                                        aliases=['l'],
-                                        help="List clients or bills.")
-    list_parser.set_defaults(func=handle_list)
-    list_parser.add_argument('type',
-                             nargs=1,
-                             choices=['clients', 'c', 'bills', 'b'])
+    list_prsr = subparsers.add_parser('list',
+                                      aliases=['l'],
+                                      help="List clients or bills.")
+    list_prsr.set_defaults(func=handle_list)
+    list_prsr.add_argument('type',
+                           nargs=1,
+                           choices=['clients', 'c', 'bills', 'b'])
 
     # Generate a bill's PDF
-    gen_parser = subparsers.add_parser(
+    gen_prsr = subparsers.add_parser(
         'generate',
         aliases=['gen', 'g'],
         help="Generate a pdf for one or many bills.")
-    gen_parser.set_defaults(func=handle_generate)
-    gen_parser.add_argument('id', nargs=1, type=int)
+    gen_prsr.set_defaults(func=handle_generate)
+    gen_prsr.add_argument('id', nargs=1, type=int)
+    return parser
 
+
+def main():
+    """Main code."""
+    parser = create_parser()
     namespace = vars(parser.parse_args())
+
     if 'func' not in namespace:
         parser.print_help()
         sys.exit()
@@ -125,3 +132,7 @@ if __name__ == "__main__":
     entities.DB.bind(provider='sqlite', filename='db.sqlite', create_db=True)
     entities.DB.generate_mapping(create_tables=True)
     namespace['func'](**namespace)
+
+
+if __name__ == "__main__":
+    main()
