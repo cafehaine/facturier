@@ -94,6 +94,8 @@ def edit_client(client: Client, new: bool = False):
         Field(FieldType.TEXT, 'Postal code', client.postal_code),
         Field(FieldType.TEXT, 'City', client.city),
         Field(FieldType.TEXT, 'Country', client.country),
+        Field(FieldType.TEXT, 'Telephone', client.tel),
+        Field(FieldType.TEXT, 'E-Mail', client.email),
     ])
 
     for label, value in output.items():
@@ -107,6 +109,10 @@ def edit_client(client: Client, new: bool = False):
             client.city = value
         elif label == "Country":
             client.country = value
+        elif label == "Telephone":
+            client.tel = value
+        elif label == "E-Mail":
+            client.email = value
 
     commit()
 

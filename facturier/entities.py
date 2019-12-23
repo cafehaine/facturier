@@ -9,7 +9,7 @@ from pony.orm import commit, Database, db_session, Optional, PrimaryKey, Require
 
 DB = Database()
 
-FAKE_NAME = [
+FAKE_NAMES = [
     'MARY', 'PATRICIA', 'LINDA', 'BARBARA', 'ELIZABETH', 'JENNIFER', 'MARIA',
     'SUSAN', 'MARGARET', 'DOROTHY', 'JAMES', 'JOHN', 'ROBERT', 'MICHAEL',
     'WILLIAM', 'DAVID', 'RICHARD', 'CHARLES', 'JOSEPH', 'THOMAS'
@@ -24,6 +24,8 @@ class Client(DB.Entity):
     postal_code = Optional(str)
     city = Optional(str)
     country = Optional(str)
+    tel = Optional(str)
+    email = Optional(str)
     bills = Set('Bill')
 
 
@@ -32,7 +34,7 @@ def generateRandomClients(count=50):
     """Generate random clients for tests."""
     for i in range(count):
         Client(name="{} {}".format(
-            choice(FAKE_NAME).capitalize(), choice(FAKE_NAME)))
+            choice(FAKE_NAMES).capitalize(), choice(FAKE_NAMES)))
     commit()
 
 
