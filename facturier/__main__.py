@@ -9,23 +9,29 @@ from weasyprint import CSS, HTML
 from facturier import entities
 from facturier import tui
 
+
 def handle_create(**kwargs):
-    print(kwargs)
+    if kwargs['type'][0] == 'c':
+        tui.new_client()
+    else:
+        tui.new_bill()
+
 
 def handle_list(**kwargs):
     print(kwargs)
 
+
 def handle_generate(**kwargs):
     print(kwargs)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(title='commands')
 
     # Create new client or bill
-    create_parser = subparsers.add_parser('create',
-                                          aliases=['c'],
-                                          help="Create a client or a new bill.")
+    create_parser = subparsers.add_parser(
+        'create', aliases=['c'], help="Create a client or a new bill.")
     create_parser.set_defaults(func=handle_create)
     create_parser.add_argument('type',
                                nargs=1,
@@ -46,18 +52,20 @@ if __name__ == "__main__":
         aliases=['gen', 'g'],
         help="Generate a pdf for one or many bills.")
     gen_parser.set_defaults(func=handle_generate)
+    gen_parser.add_argument('id', nargs=1)
 
     namespace = vars(parser.parse_args())
     if 'func' not in namespace:
         parser.print_help()
         sys.exit()
+
+    entities.DB.bind(provider='sqlite', filename='db.sqlite', create_db=True)
+    entities.DB.generate_mapping(create_tables=True)
+    #entities.generateRandomClients()
+
     namespace['func'](**namespace)
 
-    #TODO Demo code
     # remove when DB bindings are working, and cli is implemented
-    #entities.DB.bind(provider='sqlite', filename=':memory:')
-    #entities.DB.generate_mapping(create_tables=True)
-    #entities.generateRandomClients()
     #tui.new_bill()
 
     #env = Environment(loader=FileSystemLoader('.'), autoescape=True)
