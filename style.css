@@ -9,12 +9,15 @@
 body {
 	font-family: Cantarell;
 }
+.align-r {
+	text-align: right;
+}
 
 .fullwidth {
 	width: 100%;
 }
 
-.halfcols td {
+.halfcols>tbody>tr>td {
 	width: 50%;
 }
 

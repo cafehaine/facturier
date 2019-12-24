@@ -29,13 +29,12 @@
 					</td>
 					<td>
 						<table id="bill-info" class="fullwidth">
-							<tr><td>N° Facture :</td><td>{{bill.id}}</td></tr>
-							<tr><td>Date :</td><td>{{bill.date}}</td></tr>
+							<tr><td>N° Facture :</td><td class="align-r">{{bill.id}}</td></tr>
+							<tr><td>Date :</td><td class="align-r">{{bill.date}}</td></tr>
 						</table>
 					</td>
 				</tr>
 			</table>
-			<hr>
 			<table class="fullwidth halfcols">
 				<tr>
 					<td></td>
@@ -64,19 +63,27 @@
 					{% for entry in bill.entries %}
 					<tr>
 						<td>{{entry.product}}</td>
-						<td>{{entry.quantity}}</td>
-						<td>{{entry.unit_cost}}</td>
-						<td>{{entry.get_total()}}</td>
+						<td class="align-r">{{entry.quantity}}</td>
+						<td class="align-r">{{entry.unit_cost}}</td>
+						<td class="align-r">{{entry.get_total()}}</td>
 					</tr>
 					{% endfor %}
 				</tbody>
 			</table>
-			<hr>
-			<table id="total">
+			<table class="fullwidth">
 				<tbody>
-					<tr><td>Montant hors taxe</td><td>{{bill.get_total()}}</td></tr>
-					<tr><td>TVA non applicable, art. 293 B du CGI</td><td>0,00€</td></tr>
-					<tr><td>TOTAL</td><td>{{bill.get_total()}}</td></tr>
+					<tr>
+						<td></td>
+						<td>
+							<table id="total" class="fullwidth">
+								<tbody>
+									<tr><td>Montant hors taxe</td><td class="align-r">{{bill.get_total()}}</td></tr>
+									<tr><td>TVA non applicable, art. 293 B du CGI</td><td class="align-r">0,00€</td></tr>
+									<tr><td>TOTAL</td><td class="align-r">{{bill.get_total()}}</td></tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</main>
