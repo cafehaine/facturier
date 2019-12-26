@@ -67,7 +67,10 @@ def handle_generate(**kwargs):
 
         env = Environment(loader=FileSystemLoader('.'), autoescape=True)
         css = CSS('style.css')
-        template = env.get_template('template.html')
+        if kwargs['type'][0] in ['bill', 'b']:
+            template = env.get_template('bill.html')
+        else:
+            template = env.get_template('quote.html')
 
         with open('config.json') as config:
             own = json.load(config)
@@ -114,8 +117,12 @@ def create_parser():
     gen_prsr = subparsers.add_parser(
         'generate',
         aliases=['gen', 'g'],
-        help="Generate a pdf for one or many bills.")
+        help="Generate a pdf for a bill or a quote.")
     gen_prsr.set_defaults(func=handle_generate)
+    gen_prsr.add_argument('type',
+                          nargs=1,
+                          choices=['bill', 'b', 'quote', 'q'])
+
     gen_prsr.add_argument('id', nargs=1, type=int)
     return parser
 

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Facture{% endblock %}
+
+{% block body %}
+<table class="fullwidth halfcols">
+	<tr>
+		<td>
+			<ul id="own-info">
+				<li>{{own.name}}</li>
+				<li>{{own.address}}</li>
+				<li>{{own.postal_code}} {{own.city}}</li>
+				<li>{{own.tel}}</li>
+				<li>{{own.email}}</li>
+			</ul>
+		</td>
+		<td>
+			<table id="bill-info" class="fullwidth">
+				<tr><td>N° Facture :</td><td class="align-r">{{bill.id}}</td></tr>
+				<tr><td>Date :</td><td class="align-r">{{bill.date}}</td></tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<table class="fullwidth halfcols">
+	<tr>
+		<td></td>
+		<td>
+			<ul id="client-info">
+				<li>{{bill.client.name}}</li>
+				<li>{{bill.client.address}}</li>
+				<li>{{bill.client.postal_code}} {{bill.client.city}}</li>
+				<li>{{bill.client.tel}}</li>
+				<li>{{bill.client.email}}</li>
+			</ul>
+		</td>
+	</tr>
+</table>
+<hr>
+<table id="bill" class="fullwidth">
+	<thead>
+		<tr>
+			<th>Prestation</th>
+			<th>Heures</th>
+			<th>Prix Horaire HT</th>
+			<th>Total HT</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for entry in bill.entries %}
+		<tr>
+			<td>{{entry.product}}</td>
+			<td class="align-r">{{entry.quantity}}</td>
+			<td class="align-r">{{entry.unit_cost}}</td>
+			<td class="align-r">{{entry.get_total()}}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<table class="fullwidth">
+	<tbody>
+		<tr>
+			<td></td>
+			<td>
+				<table id="total" class="fullwidth">
+					<tbody>
+						<tr><td>Montant hors taxe</td><td class="align-r">{{bill.get_total()}}</td></tr>
+						<tr><td>TVA non applicable, art. 293 B du CGI</td><td class="align-r">0,00€</td></tr>
+						<tr><td>TOTAL</td><td class="align-r">{{bill.get_total()}}</td></tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+{% endblock %}

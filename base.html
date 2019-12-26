@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<table id="header" class="fullwidth halfcols">
+			<tr>
+				<td><h1>{{own.name}}</h1></td>
+				<td rowspan=2><h2>{% block title %}TITLE{% endblock%}</h2></td>
+			</tr>
+			<tr>
+				<td>SIRET {{own.siret}}</td>
+			<tr>
+		</table>
+		<hr>
+		<main>
+			{% block body %}BODY{% endblock %}
+		</main>
+	</body>
+</html>
