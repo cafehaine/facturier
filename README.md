@@ -1,3 +1,4 @@
+# No longer maintained as I'm no longer self-employed
 # Facturier
 ## What is Facturier
 
